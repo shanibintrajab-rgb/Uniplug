@@ -1,0 +1,1225 @@
+
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale: #f5e9c8;
+    --white: #fafaf8;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --surface3: #222222;
+    --text: #fafaf8;
+    --text-muted: #9a9a8a;
+    --border: rgba(201,168,76,0.2);
+    --border-bright: rgba(201,168,76,0.5);
+    --radius: 4px;
+    --radius-lg: 8px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- NAV ---- */
+  .nav {
+    position: sticky; top:0; z-index:100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 600; letter-spacing: 2px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-logo span { font-style: italic; font-weight: 300; }
+  .nav-tabs {
+    display: flex; gap: 4px;
+    overflow-x: auto; scrollbar-width: none;
+    flex: 1; justify-content: center;
+    max-width: 360px;
+  }
+  .nav-tabs::-webkit-scrollbar { display:none; }
+  .tab-btn {
+    background: none; border: none; color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.5px; padding: 6px 10px; cursor: pointer;
+    border-radius: var(--radius); white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { color: var(--gold); background: rgba(201,168,76,0.1); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+  .cart-badge {
+    position: relative; background: none; border: 1px solid var(--border-bright);
+    color: var(--gold); padding: 6px 12px; border-radius: var(--radius);
+    font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .badge-count {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--gold); color: var(--black);
+    font-size: 10px; font-weight: 700; width: 16px; height: 16px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---- PAGES ---- */
+  .page { display:none; padding: 16px; max-width: 560px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ---- HOME ---- */
+  .hero {
+    background: linear-gradient(160deg, var(--surface) 0%, var(--black) 60%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -30%; left: -30%;
+    width: 160%; height: 160%;
+    background: radial-gradient(ellipse at 60% 30%, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px; line-height: 1.1; font-weight: 300;
+    margin-bottom: 8px;
+  }
+  .hero-title em { font-style: italic; color: var(--gold-light); }
+  .hero-sub {
+    color: var(--text-muted); font-size: 13px; margin-bottom: 20px;
+    max-width: 280px; margin-left: auto; margin-right: auto;
+  }
+  .hero-cta {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--black); border: none;
+    padding: 10px 20px; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 12px;
+    letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-gold:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-outline {
+    background: none; color: var(--gold);
+    border: 1px solid var(--border-bright);
+    padding: 10px 20px; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-outline:hover { background: rgba(201,168,76,0.08); }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px 10px; text-align: center;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px; color: var(--gold); font-weight: 600;
+  }
+  .stat-lbl { font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 400; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ---- SHOP ---- */
+  .product-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+  }
+  .product-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .product-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+  .product-img {
+    height: 100px; display: flex; align-items: center; justify-content: center;
+    font-size: 32px; background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .product-badge {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(201,168,76,0.15); border: 1px solid var(--border-bright);
+    color: var(--gold); font-size: 9px; letter-spacing: 0.5px;
+    padding: 2px 6px; border-radius: 2px;
+  }
+  .product-info { padding: 10px; }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px; font-weight: 600; margin-bottom: 2px;
+  }
+  .product-size { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; }
+  .product-row { display: flex; align-items: center; justify-content: space-between; }
+  .product-price { color: var(--gold); font-weight: 500; font-size: 13px; }
+  .add-btn {
+    background: var(--gold); color: var(--black);
+    border: none; width: 24px; height: 24px;
+    border-radius: 50%; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; transition: all 0.2s;
+  }
+  .add-btn:hover { transform: scale(1.1); }
+
+  .filter-row {
+    display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .filter-pill {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-muted); font-size: 11px; padding: 5px 12px;
+    border-radius: 20px; cursor: pointer; white-space: nowrap;
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .filter-pill.active, .filter-pill:hover {
+    border-color: var(--gold); color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+
+  /* ---- SUBSCRIPTION ---- */
+  .plan-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px;
+    margin-bottom: 10px; position: relative; overflow: hidden;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .plan-card:hover { border-color: var(--border-bright); }
+  .plan-card.featured { border-color: var(--gold); }
+  .plan-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute; top: 12px; right: -20px;
+    background: var(--gold); color: var(--black);
+    font-size: 8px; font-weight: 700; letter-spacing: 1px;
+    padding: 3px 30px; transform: rotate(45deg);
+  }
+  .plan-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 600;
+  }
+  .plan-price { color: var(--gold); font-size: 22px; font-weight: 500; margin: 4px 0; }
+  .plan-price span { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+  .plan-features { list-style: none; margin-top: 10px; }
+  .plan-features li {
+    font-size: 12px; color: var(--text-muted); padding: 3px 0;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .plan-features li::before { content: '◆'; color: var(--gold); font-size: 8px; }
+  .plan-btn { margin-top: 14px; width: 100%; }
+
+  /* ---- REFILL ---- */
+  .refill-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+  }
+  .refill-icon {
+    width: 48px; height: 48px; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    flex-shrink: 0;
+  }
+  .refill-info { flex: 1; }
+  .refill-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; }
+  .refill-date { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .refill-bar-wrap { margin-top: 6px; }
+  .refill-bar {
+    height: 3px; background: var(--surface3); border-radius: 2px; overflow: hidden;
+  }
+  .refill-fill { height: 100%; background: var(--gold); border-radius: 2px; }
+  .refill-lbl { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+  .refill-btn {
+    background: none; border: 1px solid var(--border-bright);
+    color: var(--gold); padding: 6px 10px; border-radius: var(--radius);
+    font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    white-space: nowrap; transition: all 0.2s;
+  }
+  .refill-btn:hover { background: rgba(201,168,76,0.1); }
+
+  /* ---- DASHBOARD ---- */
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .dash-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px;
+  }
+  .dash-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
+  .dash-value { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--gold); font-weight: 600; margin: 4px 0; }
+  .dash-delta { font-size: 11px; color: #4caf50; }
+  .dash-delta.neg { color: #f44336; }
+
+  .chart-mini {
+    display: flex; align-items: flex-end; gap: 4px; height: 50px; margin-top: 10px;
+  }
+  .bar {
+    flex: 1; background: rgba(201,168,76,0.2);
+    border-radius: 2px 2px 0 0; min-height: 4px;
+    transition: background 0.2s;
+  }
+  .bar:hover { background: rgba(201,168,76,0.5); }
+  .bar.today { background: var(--gold); }
+
+  .order-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .order-row:last-child { border-bottom: none; }
+  .order-id { font-size: 11px; color: var(--text-muted); }
+  .order-name { font-size: 13px; font-weight: 500; }
+  .status-badge {
+    font-size: 10px; padding: 3px 8px; border-radius: 20px;
+    font-weight: 500; letter-spacing: 0.3px;
+  }
+  .status-delivered { background: rgba(76,175,80,0.15); color: #4caf50; }
+  .status-transit { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .status-pending { background: rgba(154,154,138,0.15); color: var(--text-muted); }
+
+  /* ---- ADMIN ---- */
+  .admin-tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+  .admin-tab {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-muted); padding: 7px 12px; border-radius: var(--radius);
+    font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .admin-tab.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.08); }
+
+  .admin-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
+  .form-row { margin-bottom: 10px; }
+  .form-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+  .form-input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 10px; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { outline: none; border-color: var(--gold); }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+
+  .product-admin-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .product-admin-row:last-child { border-bottom: none; }
+  .pa-icon { font-size: 20px; width: 36px; text-align: center; }
+  .pa-info { flex: 1; }
+  .pa-name { font-size: 13px; font-weight: 500; }
+  .pa-stock { font-size: 11px; color: var(--text-muted); }
+  .pa-price { color: var(--gold); font-size: 13px; font-weight: 500; }
+  .btn-sm {
+    background: none; border: 1px solid var(--border);
+    color: var(--text-muted); padding: 4px 10px;
+    border-radius: var(--radius); font-size: 11px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-sm:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ---- CART MODAL ---- */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8); z-index: 200;
+    align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    width: 100%; max-width: 560px; max-height: 80vh;
+    overflow-y: auto; padding: 20px 16px;
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; margin-bottom: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+  .cart-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .ci-icon { font-size: 22px; width: 40px; text-align: center; }
+  .ci-info { flex: 1; }
+  .ci-name { font-size: 13px; font-weight: 500; }
+  .ci-price { font-size: 12px; color: var(--gold); }
+  .ci-qty { display: flex; align-items: center; gap: 6px; }
+  .qty-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); width: 22px; height: 22px; border-radius: 50%;
+    cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;
+  }
+  .cart-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; font-size: 14px; font-weight: 500;
+  }
+  .cart-total-val { color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 20px; }
+
+  /* ---- QUIZ ---- */
+  .quiz-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 20px; text-align: center;
+  }
+  .quiz-q { font-family: 'Cormorant Garamond', serif; font-size: 18px; margin-bottom: 14px; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .quiz-opt {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 10px 8px;
+    font-size: 12px; cursor: pointer; transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif; color: var(--text);
+  }
+  .quiz-opt:hover, .quiz-opt.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); color: var(--gold); }
+  .quiz-step { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+  .quiz-progress { height: 2px; background: var(--surface3); border-radius: 1px; margin-bottom: 16px; overflow: hidden; }
+  .quiz-prog-fill { height: 100%; background: var(--gold); transition: width 0.3s; }
+
+  /* ---- CONTACT ---- */
+  .whatsapp-btn {
+    background: #25d366; color: white; border: none;
+    padding: 12px 20px; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    font-size: 13px; cursor: pointer; width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s; margin-top: 8px;
+  }
+  .whatsapp-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .contact-info {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 14px; margin-bottom: 10px;
+  }
+  .contact-row { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+  .contact-icon { color: var(--gold); font-size: 14px; width: 16px; }
+
+  /* ---- TOAST ---- */
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--surface); border: 1px solid var(--gold);
+    color: var(--text); padding: 10px 20px; border-radius: var(--radius);
+    font-size: 12px; z-index: 300; transition: transform 0.3s;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ---- DELIVERY ---- */
+  .delivery-option {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 12px;
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+  }
+  .delivery-option:hover, .delivery-option.selected { border-color: var(--gold); }
+  .delivery-option input[type=radio] { accent-color: var(--gold); }
+  .delivery-details { flex: 1; }
+  .delivery-name { font-size: 13px; font-weight: 500; }
+  .delivery-info { font-size: 11px; color: var(--text-muted); }
+  .delivery-price { color: var(--gold); font-size: 13px; font-weight: 500; }
+
+  .scrollable { overflow-y: auto; }
+  .page-header {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300; margin-bottom: 4px;
+  }
+  .page-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+
+  .loyalty-card {
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(201,168,76,0.05) 100%);
+    border: 1px solid var(--border-bright); border-radius: var(--radius-lg);
+    padding: 16px; margin-bottom: 16px; position: relative; overflow: hidden;
+  }
+  .loyalty-points { font-family: 'Cormorant Garamond', serif; font-size: 32px; color: var(--gold); }
+  .loyalty-bar { height: 4px; background: var(--surface3); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .loyalty-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">UNI<span>PLUG</span></div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="showPage('home',this)">Nyumbani</button>
+    <button class="tab-btn" onclick="showPage('shop',this)">Duka</button>
+    <button class="tab-btn" onclick="showPage('refill',this)">Refill</button>
+    <button class="tab-btn" onclick="showPage('plans',this)">Plans</button>
+    <button class="tab-btn" onclick="showPage('quiz',this)">Quiz</button>
+    <button class="tab-btn" onclick="showPage('account',this)">Akaunti</button>
+    <button class="tab-btn" onclick="showPage('admin',this)">Admin</button>
+    <button class="tab-btn" onclick="showPage('contact',this)">Wasiliana</button>
+  </div>
+  <button class="cart-badge" onclick="openCart()">
+    🛍️ Kasha
+    <span class="badge-count" id="cartCount">0</span>
+  </button>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-eyebrow">✦ Dodoma, Tanzania ✦</div>
+    <h1 class="hero-title">Harufu ya Kiuwanafunzi<br><em>Hadhi ya Kitaaluma</em></h1>
+    <p class="hero-sub">Manukato ya bei nafuu, ubora wa kilimo — kwa vijana wa Tanzania</p>
+    <div class="hero-cta">
+      <button class="btn-gold" onclick="showPage('shop', document.querySelectorAll('.tab-btn')[1])">Nunua Sasa</button>
+      <button class="btn-outline" onclick="showPage('quiz', document.querySelectorAll('.tab-btn')[4])">Chagua Manukato</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num">2,400+</div>
+      <div class="stat-lbl">Wateja Wetu</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">50+</div>
+      <div class="stat-lbl">Aina za Harufu</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">3K</div>
+      <div class="stat-lbl">Bei ya Kuanzia</div>
+    </div>
+  </div>
+
+  <div class="section-title">Maarufu Leo</div>
+  <div class="product-grid" id="featuredProducts"></div>
+
+  <div style="margin-top:20px; background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-lg); padding:16px;">
+    <div style="font-family:'Cormorant Garamond',serif; font-size:16px; margin-bottom:8px;">Referral Program</div>
+    <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Alika rafiki yako — pata TZS 500 kwa kila anayejiunga!</p>
+    <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px 12px; font-size:12px; display:flex; justify-content:space-between; align-items:center;">
+      <span style="color:var(--gold); font-family:monospace;">UNIPLUG-JN24K</span>
+      <button class="btn-sm" onclick="showToast('Nambari imenakiliwa!')">Nakili</button>
+    </div>
+  </div>
+
+  <div style="margin-top:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px;">
+    <div style="font-family:'Cormorant Garamond',serif; font-size:16px; margin-bottom:8px;">Matukio Maalum</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <span class="filter-pill active">Harusi</span>
+      <span class="filter-pill">Graduation</span>
+      <span class="filter-pill">Prom Night</span>
+      <span class="filter-pill">Campus Events</span>
+    </div>
+    <p style="font-size:12px; color:var(--text-muted); margin-top:10px;">Tunaweza kutoa manukato kwa wingi kwa matukio yako maalum.</p>
+    <button class="btn-outline" style="margin-top:10px; width:100%;" onclick="showPage('contact', document.querySelectorAll('.tab-btn')[7])">Wasiliana Nasi</button>
+  </div>
+</div>
+
+<!-- SHOP -->
+<div class="page" id="page-shop">
+  <div class="page-header">Duka Letu</div>
+  <div class="page-sub">Uchague harufu yako · Manukato ya ubora</div>
+  <div class="filter-row">
+    <span class="filter-pill active" onclick="filterProducts('all',this)">Yote</span>
+    <span class="filter-pill" onclick="filterProducts('10ml',this)">10ml</span>
+    <span class="filter-pill" onclick="filterProducts('20ml',this)">20ml</span>
+    <span class="filter-pill" onclick="filterProducts('30ml',this)">30ml</span>
+    <span class="filter-pill" onclick="filterProducts('bestseller',this)">Maarufu</span>
+    <span class="filter-pill" onclick="filterProducts('new',this)">Mpya</span>
+  </div>
+  <div class="product-grid" id="shopProducts"></div>
+</div>
+
+<!-- REFILL -->
+<div class="page" id="page-refill">
+  <div class="page-header">Mfumo wa Refill</div>
+  <div class="page-sub">Jaza tena manukato yako · Punguzo la 15%</div>
+
+  <div style="background:rgba(201,168,76,0.08); border:1px solid var(--border-bright); border-radius:var(--radius-lg); padding:12px; margin-bottom:16px; font-size:12px;">
+    <span style="color:var(--gold);">◆ Faida ya Refill:</span> Punguzo la 15% kwa kila refill. Tutakukumbusha siku 25 baada ya kununua.
+  </div>
+
+  <div class="section-title" style="font-size:16px;">Historia Yako</div>
+
+  <div class="refill-card">
+    <div class="refill-icon">🌹</div>
+    <div class="refill-info">
+      <div class="refill-name">Rose Oud 20ml</div>
+      <div class="refill-date">Ilinunuliwa: 1 Aprili 2026</div>
+      <div class="refill-bar-wrap">
+        <div class="refill-bar"><div class="refill-fill" style="width:30%"></div></div>
+        <div class="refill-lbl">Imebaki ~30% • Inafaa kujaza wiki 2</div>
+      </div>
+    </div>
+    <button class="refill-btn" onclick="showToast('Refill imeongezwa kwenye kasha!')">Jaza Tena</button>
+  </div>
+
+  <div class="refill-card">
+    <div class="refill-icon">🌊</div>
+    <div class="refill-info">
+      <div class="refill-name">Ocean Breeze 10ml</div>
+      <div class="refill-date">Ilinunuliwa: 15 Machi 2026</div>
+      <div class="refill-bar-wrap">
+        <div class="refill-bar"><div class="refill-fill" style="width:8%"></div></div>
+        <div class="refill-lbl" style="color:#f44336;">Imekwisha karibu! Jaza sasa</div>
+      </div>
+    </div>
+    <button class="refill-btn" style="border-color:#f44336; color:#f44336;" onclick="showToast('Refill imeongezwa — Haraka!')">Jaza Haraka!</button>
+  </div>
+
+  <div class="refill-card">
+    <div class="refill-icon">🌿</div>
+    <div class="refill-info">
+      <div class="refill-name">Forest Mist 30ml</div>
+      <div class="refill-date">Ilinunuliwa: 20 Machi 2026</div>
+      <div class="refill-bar-wrap">
+        <div class="refill-bar"><div class="refill-fill" style="width:65%"></div></div>
+        <div class="refill-lbl">Imebaki ~65% • Uko sawa bado</div>
+      </div>
+    </div>
+    <button class="refill-btn" onclick="showToast('Refill imeongezwa kwenye kasha!')">Jaza Tena</button>
+  </div>
+</div>
+
+<!-- PLANS -->
+<div class="page" id="page-plans">
+  <div class="page-header">Subscription Plans</div>
+  <div class="page-sub">Jiunge na UniPlug Family · Manukato kila mwezi</div>
+
+  <div class="plan-card" onclick="selectPlan(this,'Fresh Student')">
+    <div class="plan-name">🎓 Fresh Student</div>
+    <div class="plan-price">TZS 10,000 <span>/mwezi</span></div>
+    <ul class="plan-features">
+      <li>Manukato 1 × 10ml kila mwezi</li>
+      <li>Punguzo 10% dukani</li>
+      <li>Delivery bure Dodoma mjini</li>
+      <li>Access kwa harufu za kawaida</li>
+    </ul>
+    <button class="btn-gold plan-btn">Jiunge — TZS 10,000/mwezi</button>
+  </div>
+
+  <div class="plan-card featured" onclick="selectPlan(this,'Active Campus')">
+    <div class="plan-name">⚡ Active Campus</div>
+    <div class="plan-price">TZS 20,000 <span>/mwezi</span></div>
+    <ul class="plan-features">
+      <li>Manukato 2 × 20ml kila mwezi</li>
+      <li>Punguzo 20% dukani</li>
+      <li>Delivery ya haraka (same-day)</li>
+      <li>Access kwa harufu za kipekee</li>
+      <li>Pointi mara mbili za loyalty</li>
+    </ul>
+    <button class="btn-gold plan-btn">Jiunge — TZS 20,000/mwezi</button>
+  </div>
+
+  <div class="plan-card" onclick="selectPlan(this,'Elite UniPlug')">
+    <div class="plan-name">👑 Elite UniPlug</div>
+    <div class="plan-price">TZS 35,000 <span>/mwezi</span></div>
+    <ul class="plan-features">
+      <li>Manukato 3 × 30ml kila mwezi</li>
+      <li>Punguzo 30% dukani</li>
+      <li>Delivery ya kwanza — priority</li>
+      <li>Harufu za kipekee za Elite tu</li>
+      <li>Ambassador status</li>
+      <li>Event booking bure (mara 1/mwezi)</li>
+    </ul>
+    <button class="btn-gold plan-btn">Jiunge — TZS 35,000/mwezi</button>
+  </div>
+
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; margin-top:8px;">
+    <div style="font-size:12px; color:var(--text-muted); text-align:center;">
+      Lipa kwa M-Pesa · Tigo Pesa · Airtel Money<br>
+      <span style="color:var(--gold);">Ghairi wakati wowote — hakuna adhabu</span>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="page" id="page-quiz">
+  <div class="page-header">Scent Quiz</div>
+  <div class="page-sub">Tupate harufu inayokufaa zaidi</div>
+
+  <div class="quiz-card" id="quizCard">
+    <div class="quiz-step" id="quizStep">Swali 1 / 5</div>
+    <div class="quiz-progress"><div class="quiz-prog-fill" id="quizProg" style="width:20%"></div></div>
+    <div class="quiz-q" id="quizQ">Unapenda mazingira gani?</div>
+    <div class="quiz-options" id="quizOpts">
+      <button class="quiz-opt" onclick="nextQuiz(this,'Misitu')">🌿 Misitu na Asili</button>
+      <button class="quiz-opt" onclick="nextQuiz(this,'Bahari')">🌊 Bahari na Upepo</button>
+      <button class="quiz-opt" onclick="nextQuiz(this,'Mji')">🏙️ Mji na Usasa</button>
+      <button class="quiz-opt" onclick="nextQuiz(this,'Bustani')">🌸 Bustani na Maua</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT -->
+<div class="page" id="page-account">
+  <div class="page-header">Akaunti Yangu</div>
+  <div class="page-sub">Karibu, Juma! · Active Campus Member</div>
+
+  <div class="loyalty-card">
+    <div style="font-size:11px; color:var(--text-muted); letter-spacing:0.5px;">LOYALTY POINTS</div>
+    <div class="loyalty-points">1,240 pts</div>
+    <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">760 pts hadi TZS 500 punguzo</div>
+    <div class="loyalty-bar"><div class="loyalty-fill" style="width:62%"></div></div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px;">
+    <div class="dash-card">
+      <div class="dash-label">Orders Zote</div>
+      <div class="dash-value">23</div>
+      <div style="font-size:11px; color:var(--text-muted);">tangu 2025</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Imebaki Subscription</div>
+      <div class="dash-value">12</div>
+      <div style="font-size:11px; color:var(--text-muted);">siku</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:16px;">Orders za Hivi Karibuni</div>
+  <div id="userOrders">
+    <div class="order-row">
+      <div><div class="order-name">Rose Oud 20ml</div><div class="order-id">#UP-2024 · TZS 8,500</div></div>
+      <span class="status-badge status-delivered">Imefikia</span>
+    </div>
+    <div class="order-row">
+      <div><div class="order-name">Ocean Breeze 10ml</div><div class="order-id">#UP-2023 · TZS 4,000</div></div>
+      <span class="status-badge status-transit">Njiani</span>
+    </div>
+    <div class="order-row">
+      <div><div class="order-name">Forest Mist 30ml × 2</div><div class="order-id">#UP-2022 · TZS 22,000</div></div>
+      <span class="status-badge status-delivered">Imefikia</span>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;">
+    <div class="section-title" style="font-size:16px;">Harufu Zinazopendelewa</div>
+    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+      <span class="filter-pill active">🌹 Rose Oud</span>
+      <span class="filter-pill active">🌊 Ocean Breeze</span>
+      <span class="filter-pill active">👑 Noir Elite</span>
+      <span class="filter-pill" onclick="showToast('Ongeza harufu mpya kwenye orodha!')">+ Ongeza</span>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div style="font-family:'Cormorant Garamond',serif; font-size:22px; margin-bottom:4px;">Admin Panel</div>
+  <div style="font-size:12px; color:var(--gold); margin-bottom:14px;">UniPlug Business Dashboard</div>
+
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-label">Mauzo Leo</div>
+      <div class="dash-value">TZS 87K</div>
+      <div class="dash-delta">↑ 12% jana</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Mwezi Huu</div>
+      <div class="dash-value">2.4M</div>
+      <div class="dash-delta">↑ 28% mwezi uliopita</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Subscribers Hai</div>
+      <div class="dash-value">312</div>
+      <div class="dash-delta">↑ 18 wiki hii</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-label">Orders Zingojoaje</div>
+      <div class="dash-value">24</div>
+      <div class="dash-delta neg">4 zimechelewa</div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px; margin-bottom:12px;">
+    <div style="font-size:13px; font-weight:500; margin-bottom:8px;">Mauzo — Wiki Hii</div>
+    <div class="chart-mini" id="salesChart"></div>
+    <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-top:4px;">
+      <span>Jum</span><span>Imo</span><span>Jta</span><span>Alh</span><span>Ijm</span><span>Jmm</span><span>Jpi</span>
+    </div>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="showAdminTab('products',this)">Bidhaa</button>
+    <button class="admin-tab" onclick="showAdminTab('orders',this)">Orders</button>
+    <button class="admin-tab" onclick="showAdminTab('users',this)">Wateja</button>
+    <button class="admin-tab" onclick="showAdminTab('promo',this)">Promo</button>
+  </div>
+
+  <div id="admin-products">
+    <div class="admin-form">
+      <div style="font-size:13px; font-weight:500; margin-bottom:10px;">+ Ongeza Bidhaa Mpya</div>
+      <div class="form-row">
+        <label class="form-label">Jina la Bidhaa</label>
+        <input class="form-input" placeholder="Mfano: Royal Amber 20ml" id="newProdName">
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Bei (TZS)</label>
+          <input class="form-input" placeholder="8500" id="newProdPrice" type="number">
+        </div>
+        <div>
+          <label class="form-label">Ukubwa</label>
+          <select class="form-input" id="newProdSize">
+            <option>10ml</option><option>20ml</option><option>30ml</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-gold" style="width:100%;" onclick="addProduct()">Ongeza Bidhaa</button>
+    </div>
+    <div id="adminProductList"></div>
+  </div>
+
+  <div id="admin-orders" style="display:none;">
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px;">
+      <div class="order-row">
+        <div><div class="order-name">Amina Hassan</div><div class="order-id">#UP-2025 · Rose Oud 20ml · TZS 8,500</div></div>
+        <select style="background:var(--surface2); border:1px solid var(--border); color:var(--gold); padding:4px; border-radius:var(--radius); font-size:11px;" onchange="showToast('Hali imebadilishwa!')">
+          <option>Inasubiri</option><option>Njiani</option><option>Imefikia</option>
+        </select>
+      </div>
+      <div class="order-row">
+        <div><div class="order-name">Baraka Mwenda</div><div class="order-id">#UP-2024 · Ocean Breeze 10ml · TZS 4,000</div></div>
+        <select style="background:var(--surface2); border:1px solid var(--border); color:var(--gold); padding:4px; border-radius:var(--radius); font-size:11px;" onchange="showToast('Hali imebadilishwa!')">
+          <option>Inasubiri</option><option selected>Njiani</option><option>Imefikia</option>
+        </select>
+      </div>
+      <div class="order-row">
+        <div><div class="order-name">Zawadi Otieno</div><div class="order-id">#UP-2023 · Forest Mist 30ml · TZS 11,000</div></div>
+        <select style="background:var(--surface2); border:1px solid var(--border); color:var(--gold); padding:4px; border-radius:var(--radius); font-size:11px;" onchange="showToast('Hali imebadilishwa!')">
+          <option>Inasubiri</option><option>Njiani</option><option selected>Imefikia</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="admin-users" style="display:none;">
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px;">
+      <div style="font-size:12px; color:var(--text-muted); margin-bottom:10px;">Wateja 312 wamejiandikisha</div>
+      <div class="order-row">
+        <div><div class="order-name">Amina Hassan</div><div class="order-id">Elite UniPlug · Dodoma</div></div>
+        <span class="status-badge status-delivered">Active</span>
+      </div>
+      <div class="order-row">
+        <div><div class="order-name">Juma Kalole</div><div class="order-id">Active Campus · Dodoma</div></div>
+        <span class="status-badge status-transit">Active</span>
+      </div>
+      <div class="order-row">
+        <div><div class="order-name">Grace Nkosi</div><div class="order-id">Fresh Student · Dodoma</div></div>
+        <span class="status-badge status-pending">Expired</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="admin-promo" style="display:none;">
+    <div class="admin-form">
+      <div style="font-size:13px; font-weight:500; margin-bottom:10px;">Tuma Promotion</div>
+      <div class="form-row">
+        <label class="form-label">Ujumbe wa Promotion</label>
+        <textarea class="form-input" style="height:80px; resize:none;" placeholder="Mfano: Flash Sale! Punguzo la 20% leo tu..."></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Tuma kwa</label>
+        <select class="form-input">
+          <option>Wateja Wote</option>
+          <option>Subscribers tu</option>
+          <option>Elite Members</option>
+        </select>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:4px;">
+        <button class="btn-gold" onclick="showToast('Promotion imetumwa kwa SMS!')" style="flex:1;">Tuma SMS</button>
+        <button class="btn-outline" onclick="showToast('Promotion imetumwa kwa WhatsApp!')" style="flex:1;">Tuma WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="page-contact">
+  <div class="page-header">Wasiliana Nasi</div>
+  <div class="page-sub">Tuko hapa kukusaidia · Dodoma, Tanzania</div>
+
+  <div class="contact-info">
+    <div class="contact-row"><span class="contact-icon">📍</span><span>Dodoma, Tanzania (Karibu na Chuo Kikuu)</span></div>
+    <div class="contact-row"><span class="contact-icon">📞</span><span>+255 XXX XXX XXX</span></div>
+    <div class="contact-row"><span class="contact-icon">⏰</span><span>Jumatatu – Jumamosi · 8:00 – 20:00</span></div>
+    <div class="contact-row"><span class="contact-icon">🚀</span><span>Delivery kwa saa 2–4 (Dodoma mjini)</span></div>
+  </div>
+
+  <div style="font-size:13px; font-weight:500; margin-bottom:8px; margin-top:4px;">Agiza kupitia WhatsApp</div>
+  <button class="whatsapp-btn" onclick="openWhatsApp()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.116.555 4.103 1.523 5.828L.057 23.999l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.848 0-3.573-.498-5.061-1.362l-.362-.214-3.742.981.998-3.648-.235-.374A9.953 9.953 0 012 12C2 6.478 6.478 2 12 2s10 4.478 10 10-4.478 10-10 10z"/></svg>
+    Agiza kupitia WhatsApp Sasa
+  </button>
+
+  <div style="margin-top:16px; font-size:13px; font-weight:500; margin-bottom:8px;">Tuma Ujumbe</div>
+  <div class="admin-form">
+    <div class="form-row">
+      <label class="form-label">Jina Lako</label>
+      <input class="form-input" placeholder="Jina lako kamili">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Nambari ya Simu</label>
+      <input class="form-input" placeholder="+255 XXX XXX XXX">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Ujumbe</label>
+      <textarea class="form-input" style="height:80px; resize:none;" placeholder="Nini unachohitaji?"></textarea>
+    </div>
+    <button class="btn-gold" style="width:100%;" onclick="showToast('Ujumbe umetumwa! Tutawasiliana hivi karibuni.')">Tuma Ujumbe</button>
+  </div>
+
+  <div style="margin-top:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:14px;">
+    <div style="font-size:13px; font-weight:500; margin-bottom:10px;">Malipo Yanayokubaliwa</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px; text-align:center; font-size:12px;">
+        <div style="font-size:18px; margin-bottom:2px;">📱</div>M-Pesa
+      </div>
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px; text-align:center; font-size:12px;">
+        <div style="font-size:18px; margin-bottom:2px;">📱</div>Tigo Pesa
+      </div>
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px; text-align:center; font-size:12px;">
+        <div style="font-size:18px; margin-bottom:2px;">📱</div>Airtel Money
+      </div>
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); padding:8px; text-align:center; font-size:12px;">
+        <div style="font-size:18px; margin-bottom:2px;">💵</div>Cash on Delivery
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div class="modal-overlay" id="cartModal">
+  <div class="modal">
+    <div class="modal-title">
+      Kasha Chako
+      <button class="close-btn" onclick="closeCart()">✕</button>
+    </div>
+    <div id="cartItems">
+      <div style="text-align:center; color:var(--text-muted); padding:20px 0; font-size:13px;">Kasha lako ni tupu</div>
+    </div>
+    <div id="cartFooter" style="display:none;">
+      <div class="cart-total">
+        <span>Jumla:</span>
+        <span class="cart-total-val" id="cartTotalVal">TZS 0</span>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Chagua aina ya delivery:</div>
+        <div class="delivery-option selected" onclick="selectDelivery(this,500,'Standard')">
+          <input type="radio" name="delivery" checked>
+          <div class="delivery-details">
+            <div class="delivery-name">Standard Delivery</div>
+            <div class="delivery-info">Saa 2–4 · Dodoma mjini</div>
+          </div>
+          <span class="delivery-price">TZS 500</span>
+        </div>
+        <div class="delivery-option" onclick="selectDelivery(this,1000,'Same-day Express')">
+          <input type="radio" name="delivery">
+          <div class="delivery-details">
+            <div class="delivery-name">Same-day Express</div>
+            <div class="delivery-info">Ndani ya saa 1 · Bei ya ziada</div>
+          </div>
+          <span class="delivery-price">TZS 1,000</span>
+        </div>
+        <div class="delivery-option" onclick="selectDelivery(this,1500,'Nje ya Mji')">
+          <input type="radio" name="delivery">
+          <div class="delivery-details">
+            <div class="delivery-name">Nje ya Mji</div>
+            <div class="delivery-info">Mikoa mingine · Siku 1–2</div>
+          </div>
+          <span class="delivery-price">TZS 1,500</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button class="btn-outline" style="flex:1;" onclick="checkoutWhatsApp()">Lipa WhatsApp</button>
+        <button class="btn-gold" style="flex:1;" onclick="showToast('Unafunguliwa ukurasa wa malipo...')">Lipa Sasa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const products = [
+  {id:1, name:'Rose Oud', size:'20ml', price:8500, emoji:'🌹', badge:'Bestseller', cat:'20ml'},
+  {id:2, name:'Ocean Breeze', size:'10ml', price:4000, emoji:'🌊', badge:'Mpya', cat:'10ml'},
+  {id:3, name:'Forest Mist', size:'30ml', price:11000, emoji:'🌿', badge:'', cat:'30ml'},
+  {id:4, name:'Noir Elite', size:'20ml', price:9000, emoji:'🖤', badge:'Bestseller', cat:'20ml'},
+  {id:5, name:'Citrus Bloom', size:'10ml', price:3000, emoji:'🍊', badge:'', cat:'10ml'},
+  {id:6, name:'Amber Gold', size:'30ml', price:13000, emoji:'✨', badge:'Mpya', cat:'30ml'},
+  {id:7, name:'Jasmine Mist', size:'10ml', price:3500, emoji:'🌸', badge:'', cat:'10ml'},
+  {id:8, name:'Oud Royale', size:'30ml', price:15000, emoji:'👑', badge:'Bestseller', cat:'30ml'},
+];
+
+let cart = [];
+let deliveryFee = 500;
+let currentFilter = 'all';
+let adminProducts = [...products];
+
+function formatPrice(p){ return 'TZS '+p.toLocaleString(); }
+
+function renderProducts(list, containerId){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = list.map(p => `
+    <div class="product-card">
+      <div class="product-img">
+        ${p.emoji}
+        ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-size">${p.size} · Pure Perfume Oil</div>
+        <div class="product-row">
+          <span class="product-price">${formatPrice(p.price)}</span>
+          <button class="add-btn" onclick="addToCart(${p.id})">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAdminProducts(){
+  const el = document.getElementById('adminProductList');
+  if(!el) return;
+  el.innerHTML = adminProducts.map(p => `
+    <div class="product-admin-row">
+      <div class="pa-icon">${p.emoji}</div>
+      <div class="pa-info">
+        <div class="pa-name">${p.name} ${p.size}</div>
+        <div class="pa-stock">Stoki: 42 vitu</div>
+      </div>
+      <span class="pa-price">${formatPrice(p.price)}</span>
+      <button class="btn-sm">Edit</button>
+    </div>
+  `).join('');
+}
+
+function filterProducts(cat, el){
+  currentFilter = cat;
+  document.querySelectorAll('#page-shop .filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = cat === 'all' ? products :
+    cat === 'bestseller' ? products.filter(p => p.badge === 'Bestseller') :
+    cat === 'new' ? products.filter(p => p.badge === 'Mpya') :
+    products.filter(p => p.cat === cat);
+  renderProducts(filtered, 'shopProducts');
+}
+
+function addToCart(id){
+  const p = products.find(x => x.id === id);
+  const existing = cart.find(x => x.id === id);
+  if(existing) existing.qty++;
+  else cart.push({...p, qty:1});
+  updateCartBadge();
+  showToast(p.name + ' imeongezwa kwenye kasha!');
+}
+
+function updateCartBadge(){
+  document.getElementById('cartCount').textContent = cart.reduce((s,x)=>s+x.qty,0);
+}
+
+function openCart(){
+  renderCart();
+  document.getElementById('cartModal').classList.add('open');
+}
+
+function closeCart(){
+  document.getElementById('cartModal').classList.remove('open');
+}
+
+function renderCart(){
+  const el = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  if(cart.length === 0){
+    el.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px 0; font-size:13px;">Kasha lako ni tupu</div>';
+    footer.style.display = 'none';
+    return;
+  }
+  footer.style.display = 'block';
+  el.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="ci-icon">${item.emoji}</div>
+      <div class="ci-info">
+        <div class="ci-name">${item.name} ${item.size}</div>
+        <div class="ci-price">${formatPrice(item.price)}</div>
+      </div>
+      <div class="ci-qty">
+        <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+        <span style="font-size:13px; min-width:16px; text-align:center;">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+      </div>
+    </div>
+  `).join('');
+  const subtotal = cart.reduce((s,x)=>s+x.price*x.qty,0);
+  document.getElementById('cartTotalVal').textContent = formatPrice(subtotal + deliveryFee);
+}
+
+function changeQty(id, delta){
+  const idx = cart.findIndex(x => x.id === id);
+  if(idx < 0) return;
+  cart[idx].qty += delta;
+  if(cart[idx].qty <= 0) cart.splice(idx,1);
+  updateCartBadge();
+  renderCart();
+}
+
+function selectDelivery(el, fee, name){
+  deliveryFee = fee;
+  document.querySelectorAll('.delivery-option').forEach(d => d.classList.remove('selected'));
+  el.classList.add('selected');
+  renderCart();
+}
+
+function checkoutWhatsApp(){
+  const msg = 'Habari UniPlug!\n\nNataka kuagiza:\n' +
+    cart.map(x => `• ${x.name} ${x.size} x${x.qty} = ${formatPrice(x.price*x.qty)}`).join('\n') +
+    `\nDelivery: ${formatPrice(deliveryFee)}\nJumla: ${formatPrice(cart.reduce((s,x)=>s+x.price*x.qty,0)+deliveryFee)}`;
+  openWhatsAppMsg(encodeURIComponent(msg));
+}
+
+function openWhatsApp(){
+  const msg = 'Habari UniPlug! Nataka kuagiza manukato. Mnaweza kunisaidia?';
+  openWhatsAppMsg(encodeURIComponent(msg));
+}
+
+function openWhatsAppMsg(msg){
+  showToast('Inakufungua WhatsApp...');
+  closeCart();
+}
+
+const quizQuestions = [
+  {q:'Unapenda mazingira gani?', opts:['🌿 Misitu','🌊 Bahari','🏙️ Mji','🌸 Bustani']},
+  {q:'Unatumia harufu saa ngapi?', opts:['🌅 Asubuhi','☀️ Mchana','🌆 Jioni','🌙 Usiku']},
+  {q:'Msimu unaopenda zaidi?', opts:['🌸 Masika','☀️ Kiangazi','🍂 Vuli','❄️ Kipupwe']},
+  {q:'Aroma inayokupendeza?', opts:['🌺 Maua','🌲 Mbao','🍋 Matunda','🍫 Tamu']},
+  {q:'Hisia unayotaka?', opts:['💪 Nguvu','😌 Utulivu','✨ Mvuto','🎯 Ushindi']},
+];
+let quizStep = 0;
+let quizAnswers = [];
+
+function nextQuiz(el, answer){
+  quizAnswers.push(answer);
+  quizStep++;
+  const prog = ((quizStep)/5)*100;
+  document.getElementById('quizProg').style.width = prog+'%';
+
+  if(quizStep >= 5){
+    document.getElementById('quizQ').textContent = 'Harufu Inayokufaa!';
+    document.getElementById('quizStep').textContent = 'Matokeo';
+    document.getElementById('quizOpts').innerHTML = `
+      <div style="grid-column:1/-1; text-align:center; padding:8px 0;">
+        <div style="font-size:32px; margin-bottom:8px;">🌹</div>
+        <div style="font-size:16px; font-weight:500; color:var(--gold);">Rose Oud 20ml</div>
+        <div style="font-size:12px; color:var(--text-muted); margin:6px 0 12px;">Harufu ya joto na tamu inayokufaa kikamilifu</div>
+        <button class="btn-gold" onclick="addToCart(1); showToast('Rose Oud imeongezwa!'); quizStep=0; quizAnswers=[];">Ongeza Kwenye Kasha</button>
+        <button class="btn-outline" style="margin-top:8px; display:block; width:100%;" onclick="quizStep=0; quizAnswers=[]; loadQuizQ();">Jaribu Tena</button>
+      </div>
+    `;
+    return;
+  }
+  loadQuizQ();
+}
+
+function loadQuizQ(){
+  if(quizStep >= quizQuestions.length) return;
+  const q = quizQuestions[quizStep];
+  document.getElementById('quizStep').textContent = `Swali ${quizStep+1} / 5`;
+  document.getElementById('quizQ').textContent = q.q;
+  document.getElementById('quizOpts').innerHTML = q.opts.map(o =>
+    `<button class="quiz-opt" onclick="nextQuiz(this,'${o}')">${o}</button>`
+  ).join('');
+}
+
+function showPage(id, btn){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn){
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  if(id === 'admin') renderAdminProducts();
+  if(id === 'quiz') loadQuizQ();
+}
+
+function showAdminTab(tab, btn){
+  ['products','orders','users','promo'].forEach(t => {
+    const el = document.getElementById('admin-'+t);
+    if(el) el.style.display = t===tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function addProduct(){
+  const name = document.getElementById('newProdName').value;
+  const price = parseInt(document.getElementById('newProdPrice').value);
+  const size = document.getElementById('newProdSize').value;
+  if(!name || !price){ showToast('Jaza sehemu zote!'); return; }
+  const emojis = ['🌟','💫','⭐','🌺','🎋','🌴'];
+  adminProducts.push({id:Date.now(), name, size, price, emoji: emojis[Math.floor(Math.random()*emojis.length)], badge:'Mpya', cat:size});
+  document.getElementById('newProdName').value='';
+  document.getElementById('newProdPrice').value='';
+  renderAdminProducts();
+  showToast(name + ' imeongezwa!');
+}
+
+function selectPlan(card, plan){
+  showToast('Unaanza ' + plan + ' plan...');
+}
+
+let toastTimeout;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Sales chart
+function renderSalesChart(){
+  const sales = [42,38,65,51,78,82,87];
+  const max = Math.max(...sales);
+  const el = document.getElementById('salesChart');
+  if(!el) return;
+  el.innerHTML = sales.map((v,i) => `
+    <div class="bar${i===6?' today':''}" style="height:${(v/max)*100}%" title="TZS ${v}K"></div>
+  `).join('');
+}
+
+// Init
+renderProducts(products.slice(0,4), 'featuredProducts');
+renderProducts(products, 'shopProducts');
+renderSalesChart();
+</script>
+</body>
+</html>
