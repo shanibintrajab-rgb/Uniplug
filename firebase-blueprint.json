@@ -1,0 +1,96 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Perfume product details",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Perfume name" },
+        "description": { "type": "string", "description": "Description of the scent" },
+        "price": { "type": "number", "description": "Base price" },
+        "category": { "type": "string", "enum": ["10ml", "20ml", "30ml", "Refills"] },
+        "scentType": { "type": "string", "enum": ["Floral", "Woody", "Fresh", "Oriental"] },
+        "image": { "type": "string", "description": "URL to product image" },
+        "stock": { "type": "integer" }
+      },
+      "required": ["name", "price", "category", "scentType"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer perfume order",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "processing", "on-delivery", "delivered"] },
+        "paymentMethod": { "type": "string", "enum": ["m-pesa", "airtel-money", "tigo-pesa", "cash"] },
+        "location": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "items", "totalAmount", "status", "paymentMethod", "location", "createdAt"]
+    },
+    "UserSubscription": {
+      "title": "UserSubscription",
+      "description": "User's active perfume subscription",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "planId": { "type": "string", "enum": ["fresh-student", "active-campus", "elite-uniplug"] },
+        "status": { "type": "string", "enum": ["active", "cancelled", "expired"] },
+        "startDate": { "type": "string", "format": "date-time" },
+        "nextRefillDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "planId", "status", "startDate"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account information",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "location": { "type": "string" },
+        "isAdmin": { "type": "boolean" },
+        "points": { "type": "integer" }
+      },
+      "required": ["phoneNumber"]
+    },
+    "RefillRequest": {
+      "title": "RefillRequest",
+      "description": "Request for a perfume refill",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "productId": { "type": "string" },
+        "size": { "type": "string" },
+        "price": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "completed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "productId", "size", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of perfumes"
+    },
+    "orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer orders"
+    },
+    "subscriptions/{subscriptionId}": {
+      "schema": "UserSubscription",
+      "description": "User subscriptions"
+    },
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles"
+    },
+    "refillRequests/{requestId}": {
+      "schema": "RefillRequest",
+      "description": "Requests for perfume refills"
+    }
+  }
+}

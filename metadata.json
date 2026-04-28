@@ -1,0 +1,6 @@
+{
+  "name": "UniPlug Perfumes",
+  "description": "Student-focused perfume brand in Dodoma, Tanzania, offering affordable fragrances, refills, and subscriptions.",
+  "requestFramePermissions": ["notifications"],
+  "majorCapabilities": []
+}
